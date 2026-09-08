@@ -517,7 +517,8 @@ def predecir_dia(fecha: str | None = None) -> pd.DataFrame:
     if juegos.empty:
         return pd.DataFrame()
 
-    proximos = juegos[juegos["status"].isin(["Scheduled", "Pre-Game", "Warmup", "In-Progress", "Live"])]
+    # CORRECCIÓN: Se añade "Preview" para capturar los juegos agendados devueltos por abstractGameState
+    proximos = juegos[juegos["status"].isin(["Preview", "Scheduled", "Pre-Game", "Warmup", "In-Progress", "Live"])]
     if proximos.empty:
         return pd.DataFrame()
 
@@ -598,7 +599,7 @@ def predecir_dia(fecha: str | None = None) -> pd.DataFrame:
 
         if ev_h > 0.03 and ev_h > ev_a:
             b = cuota_h_dec - 1.0
-            kelly = max(0.0, ((b * p_local) - (1 - p_local)) / b) * 0.25 # Fraccional Kelly (1/4)
+            kelly = max(0.0, ((b * p_local) - (1 - p_local)) / b) * 0.25  # Fraccional Kelly (1/4)
             row_pred["pick_ev"] = f"Local (+EV {ev_h:.1%})"
             row_pred["stake_rec"] = f"{kelly:.1%}"
         elif ev_a > 0.03 and ev_a > ev_h:
