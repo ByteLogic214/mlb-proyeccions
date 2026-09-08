@@ -133,7 +133,7 @@ def _parsear_calendario(payload: dict) -> pd.DataFrame:
     for dia in payload.get("dates", []):
         for g in dia.get("games", []):
             local = g.get("teams", {}).get("home", {})
-            visit = g.get("teams", {}).get("away", "")
+            visit = g.get("teams", {}).get("away", {})
 
             hom_p = local.get("probablePitcher", {}).get("fullName", "TBD")
             away_p = visit.get("probablePitcher", {}).get("fullName", "TBD")
@@ -502,6 +502,14 @@ def entrenar_modelos():
 # ---------------------------------------------------------------
 # Generación de Predicciones y Cálculo EV+
 # ---------------------------------------------------------------
+def american_to_decimal(american_odds: float) -> float:
+    if american_odds > 0:
+        return (american_odds / 100.0) + 1.0
+    elif american_odds < 0:
+        return (100.0 / abs(american_odds)) + 1.0
+    return 1.0
+
+
 def predecir_dia(fecha: str | None = None) -> pd.DataFrame:
     fecha = fecha or datetime.date.today().strftime("%Y-%m-%d")
     juegos = calendario_dia(fecha)
@@ -509,4 +517,128 @@ def predecir_dia(fecha: str | None = None) -> pd.DataFrame:
     if juegos.empty:
         return pd.DataFrame()
 
-    proximos = juegos[juegos["status"].isin(["Scheduled", "
+    proximos = juegos[juegos["status"].isin(["Scheduled", "Pre-Game", "Warmup", "In-Progress", "Live"])]
+    if proximos.empty:
+        return pd.DataFrame()
+
+    equipos = cargar_equipos(proximos)
+    cuotas_api = obtener_cuotas_odds_api(fecha)
+
+    predicciones = []
+    gdate = pd.Timestamp(fecha)
+
+    for _, g in proximos.iterrows():
+        hid, aid = g["hom_team_id"], g["away_team_id"]
+        if pd.isna(hid) or pd.isna(aid):
+            continue
+
+        hid, aid = int(hid), int(aid)
+        pf = PARK_FACTORS.get(g["hom_team_name"], 1.00)
+
+        feat = {"park_factor": pf}
+
+        for lado, tid in [("hom", hid), ("away", aid)]:
+            eq = equipos.get(tid)
+            if not eq:
+                continue
+            for k, v in ultimas_características(eq["features"], gdate).items():
+                if k in ("date", "team_id", "opponent_id"):
+                    continue
+                feat[f"{lado}_{k}"] = v
+            feat[f"{lado}_descanso"] = dias_descanso(eq["hitting"], gdate)
+
+        row_pred = {
+            "fecha": fecha,
+            "matchup": f"{g['away_team_name']} @ {g['hom_team_name']}",
+            "hom_team": g["hom_team_name"],
+            "away_team": g["away_team_name"],
+            "hom_pitcher": g["hom_pitcher"],
+            "away_pitcher": g["away_pitcher"],
+            "park_factor": pf,
+        }
+
+        # Inferencia con modelos entrenados
+        for objetivo in TARGETS:
+            ruta_m = os.path.join(MODEL_DIR, f"{objetivo}.joblib")
+            if not os.path.exists(ruta_m):
+                continue
+            obj_loaded = joblib.load(ruta_m)
+            modelo = obj_loaded["modelo"]
+            cols = obj_loaded["features"]
+
+            X_in = pd.DataFrame([feat]).reindex(columns=cols, fill_value=0.0)
+
+            if objetivo == "hom_win":
+                probs = modelo.predict_proba(X_in)[0]
+                row_pred["ml_local_%"] = round(probs[1] * 100, 1)
+                row_pred["ml_visitante_%"] = round(probs[0] * 100, 1)
+            else:
+                val = modelo.predict(X_in)[0]
+                row_pred[objetivo] = round(float(val), 2)
+
+        # Integración con Odds de mercado
+        match_key = f"{g['away_team_name']} @ {g['hom_team_name']}"
+        odds_info = cuotas_api.get(match_key, {})
+
+        cuota_h_am = odds_info.get("hom_ml_odds", 0.0)
+        cuota_a_am = odds_info.get("away_ml_odds", 0.0)
+
+        cuota_h_dec = american_to_decimal(cuota_h_am) if cuota_h_am != 0.0 else 0.0
+        cuota_a_dec = american_to_decimal(cuota_a_am) if cuota_a_am != 0.0 else 0.0
+
+        row_pred["cuota_local"] = cuota_h_dec if cuota_h_dec > 0 else "—"
+        row_pred["cuota_visitante"] = cuota_a_dec if cuota_a_dec > 0 else "—"
+
+        # Lógica de cálculo EV+ y Stake Kelly
+        p_local = row_pred.get("ml_local_%", 50.0) / 100.0
+        p_away = row_pred.get("ml_visitante_%", 50.0) / 100.0
+
+        ev_h = (p_local * cuota_h_dec) - 1.0 if cuota_h_dec > 1.0 else -1.0
+        ev_a = (p_away * cuota_a_dec) - 1.0 if cuota_a_dec > 1.0 else -1.0
+
+        if ev_h > 0.03 and ev_h > ev_a:
+            b = cuota_h_dec - 1.0
+            kelly = max(0.0, ((b * p_local) - (1 - p_local)) / b) * 0.25 # Fraccional Kelly (1/4)
+            row_pred["pick_ev"] = f"Local (+EV {ev_h:.1%})"
+            row_pred["stake_rec"] = f"{kelly:.1%}"
+        elif ev_a > 0.03 and ev_a > ev_h:
+            b = cuota_a_dec - 1.0
+            kelly = max(0.0, ((b * p_away) - (1 - p_away)) / b) * 0.25
+            row_pred["pick_ev"] = f"Visitante (+EV {ev_a:.1%})"
+            row_pred["stake_rec"] = f"{kelly:.1%}"
+        else:
+            row_pred["pick_ev"] = "Sin Valor Claro"
+            row_pred["stake_rec"] = "0%"
+
+        predicciones.append(row_pred)
+
+    return pd.DataFrame(predicciones)
+
+
+# ---------------------------------------------------------------
+# Punto de Entrada Principal
+# ---------------------------------------------------------------
+def main():
+    fecha_target = sys.argv[1] if len(sys.argv) > 1 else datetime.date.today().strftime("%Y-%m-%d")
+
+    print(f"🚀 Iniciando Pipeline MLB ML Pro (Fecha: {fecha_target})...")
+
+    print("1️⃣ Entrenando / Actualizando modelos cuantitativos...")
+    entrenar_modelos()
+
+    print("2️⃣ Generando predicciones y buscando cuotas de valor (+EV)...")
+    df_res = predecir_dia(fecha_target)
+
+    if df_res.empty:
+        print("⚠️ No se encontraron partidos agendados o activos para procesar.")
+        return
+
+    os.makedirs(OUTPUT_DIR, exist_ok=True)
+    file_out = os.path.join(OUTPUT_DIR, f"predicciones_{fecha_target}.csv")
+    df_res.to_csv(file_out, index=False)
+
+    print(f"✅ Proceso finalizado con éxito. Resultado guardado en: {file_out}")
+
+
+if __name__ == "__main__":
+    main()
