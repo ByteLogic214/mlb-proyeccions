@@ -1,20 +1,14 @@
 #!/usr/bin/env python3
 """
-Performance Tracking System
-===========================
-Sistema de auditoría y seguimiento de predicciones.
-
-Calcula:
-  - Hit Rate (%)
-  - ROI / Yield
-  - Desviación en totales
-  - Análisis de sesgo
+Performance Tracking System - Pro Edition
+=========================================
+Sistema de auditoría, seguimiento de rendimiento y cálculo de ROI/Yield real.
 """
 
 import glob
 import os
 import re
-from typing import Dict, List
+from typing import Dict
 
 import pandas as pd
 import requests
@@ -35,15 +29,7 @@ class PerformanceTracker:
         self.results_cache: Dict[str, Dict] = {}
     
     def fetch_real_results(self, date: str) -> Dict[str, Dict]:
-        """
-        Obtiene resultados reales de un día.
-        
-        Args:
-            date: Fecha en formato YYYY-MM-DD
-        
-        Returns:
-            Diccionario con resultados por matchup
-        """
+        """Obtiene resultados reales del schedule oficial de la MLB."""
         if date in self.results_cache:
             return self.results_cache[date]
         
@@ -58,6 +44,7 @@ class PerformanceTracker:
             
             for day in data.get("dates", []):
                 for game in day.get("games", []):
+                    # Solo auditar partidos finalizados
                     if game.get("status", {}).get("abstractGameState") != "Final":
                         continue
                     
@@ -87,21 +74,16 @@ class PerformanceTracker:
             return {}
     
     def audit_predictions(self) -> pd.DataFrame:
-        """
-        Audita todas las predicciones históricas.
-        
-        Returns:
-            DataFrame con resultados de auditoría
-        """
+        """Audita las predicciones exportadas por mlb_betting.py."""
         prediction_files = sorted(
             glob.glob(os.path.join(self.output_dir, "predicciones_*.csv"))
         )
         
         if not prediction_files:
-            logger.warning("No se encontraron archivos de predicción.")
+            logger.warning("No se encontraron archivos de predicción en la carpeta output.")
             return pd.DataFrame()
         
-        logger.info(f"Auditando {len(prediction_files)} archivos...")
+        logger.info(f"Auditando {len(prediction_files)} archivos de predicción...")
         
         audit_records = []
         
@@ -112,59 +94,64 @@ class PerformanceTracker:
             
             date_str = match.group(1)
             
-            # Cargar predicciones
             try:
                 df_pred = pd.read_csv(file_path)
             except Exception as e:
                 logger.error(f"Error leyendo {file_path}: {e}")
                 continue
             
-            # Obtener resultados reales
             real_results = self.fetch_real_results(date_str)
-            
             if not real_results:
                 continue
             
-            # Evaluar cada predicción
             for _, row in df_pred.iterrows():
                 matchup = row.get("matchup")
-                
                 if matchup not in real_results:
                     continue
                 
                 real = real_results[matchup]
                 
-                # Evaluar moneyline
-                pred_prob_h = row.get("ml_local_%", 50.0)
+                # Evaluation of Moneyline Model Prediction
+                pred_prob_h = float(row.get("ml_local_%", 50.0))
                 pred_winner = "home" if pred_prob_h > 50.0 else "away"
                 real_winner = real["winner"]
                 ml_correct = (pred_winner == real_winner)
                 
-                # Evaluar totales
-                pred_total = row.get("total_runs", 0.0)
+                # Totals Evaluation
+                pred_total = float(row.get("total_runs", 0.0))
                 real_total = real["total_runs"]
                 total_error = abs(pred_total - real_total)
                 
-                # Evaluar EV
-                pick_ev = str(row.get("ev_pick", ""))
-                stake = row.get("ev_stake", "0%")
+                # Value Betting Evaluation (EV Picks)
+                pick_ev = str(row.get("pick_ev", "Sin Valor Claro"))
+                stake_str = str(row.get("stake_rec", "0%")).replace("%", "")
+                stake_pct = float(stake_str) / 100.0 if stake_str else 0.0
+                
+                pick_made = stake_pct > 0.0 and pick_ev != "Sin Valor Claro"
                 
                 pnl = 0.0
-                if "%" in stake and stake != "0%":
-                    # Hubo una apuesta
-                    odds_h = row.get("cuota_hom_ml_odds", 0.0)
-                    odds_a = row.get("cuota_away_ml_odds", 0.0)
+                units_staked = 0.0
+                
+                if pick_made:
+                    # Parsear cuotas decimales con respaldo
+                    c_loc = pd.to_numeric(row.get("cuota_local"), errors="coerce")
+                    c_vis = pd.to_numeric(row.get("cuota_visitante"), errors="coerce")
                     
-                    if row.get("hom_team") in pick_ev:
+                    odds_h = float(c_loc) if pd.notna(c_loc) and c_loc > 1.0 else 1.90
+                    odds_a = float(c_vis) if pd.notna(c_vis) and c_vis > 1.0 else 1.90
+                    
+                    units_staked = stake_pct * 100.0  # Normalizado a unidades base
+                    
+                    if "Local" in pick_ev:
                         if real_winner == "home":
-                            pnl = (odds_h - 1.0) if odds_h > 1 else 0.9
+                            pnl = units_staked * (odds_h - 1.0)
                         else:
-                            pnl = -1.0
-                    elif row.get("away_team") in pick_ev:
+                            pnl = -units_staked
+                    elif "Visitante" in pick_ev:
                         if real_winner == "away":
-                            pnl = (odds_a - 1.0) if odds_a > 1 else 0.9
+                            pnl = units_staked * (odds_a - 1.0)
                         else:
-                            pnl = -1.0
+                            pnl = -units_staked
                 
                 audit_records.append({
                     "fecha": date_str,
@@ -175,70 +162,65 @@ class PerformanceTracker:
                     "pred_total": pred_total,
                     "real_total": real_total,
                     "total_error": total_error,
-                    "pick_made": "%" in stake and stake != "0%",
+                    "pick_made": pick_made,
+                    "pick_ev": pick_ev,
+                    "units_staked": units_staked,
                     "pnl_units": pnl,
                 })
         
         df_audit = pd.DataFrame(audit_records)
-        
         if df_audit.empty:
-            logger.warning("No hay datos de auditoría.")
+            logger.warning("No hay datos para guardar en la auditoría.")
             return df_audit
         
-        # Guardar resultados
         audit_path = os.path.join(self.output_dir, "tracking_results.csv")
         df_audit.to_csv(audit_path, index=False)
-        logger.info(f"Resultados de auditoría guardados: {audit_path}")
+        logger.info(f"Auditoría ejecutada con éxito. Guardado en: {audit_path}")
         
         return df_audit
     
     def generate_report(self, df_audit: pd.DataFrame):
-        """
-        Genera reporte de rendimiento.
-        
-        Args:
-            df_audit: DataFrame de auditoría
-        """
+        """Genera y muestra en logs el reporte cuantitativo de métricas."""
         if df_audit.empty:
-            logger.warning("No hay datos para generar reporte.")
+            logger.warning("No se encontraron registros auditados.")
             return
         
         total_games = len(df_audit)
         ml_correct = df_audit["ml_correct"].sum()
-        hit_rate = (ml_correct / total_games) * 100
-        
+        hit_rate = (ml_correct / total_games) * 100 if total_games > 0 else 0.0
         avg_total_error = df_audit["total_error"].mean()
         
         picks_made = df_audit[df_audit["pick_made"]]
         total_picks = len(picks_made)
         
         if total_picks > 0:
-            total_staked = total_picks  # Asumimos 1U por pick
-            total_return = total_staked + picks_made["pnl_units"].sum()
-            profit = total_return - total_staked
-            roi = (profit / total_staked) * 100
+            total_staked = picks_made["units_staked"].sum()
+            profit = picks_made["pnl_units"].sum()
+            roi = (profit / total_staked * 100.0) if total_staked > 0 else 0.0
+            wins = len(picks_made[picks_made["pnl_units"] > 0])
+            picks_hit_rate = (wins / total_picks) * 100.0
         else:
-            total_staked = 0
-            total_return = 0
-            profit = 0
+            total_staked = 0.0
+            profit = 0.0
             roi = 0.0
+            picks_hit_rate = 0.0
         
         logger.info("\n" + "=" * 70)
-        logger.info("📊 REPORTE DE RENDIMIENTO")
+        logger.info("📊 REPORTE DE AUDITORÍA Y RENDIMIENTO MLB ML")
         logger.info("=" * 70)
-        logger.info(f"Juegos Evaluados:       {total_games}")
-        logger.info(f"Hit Rate Moneyline:     {hit_rate:.2f}% ({ml_correct}/{total_games})")
-        logger.info(f"Error Promedio Totales: {avg_total_error:.2f} runs")
+        logger.info(f"Juegos Evaluados:          {total_games}")
+        logger.info(f"Hit Rate General ML:       {hit_rate:.2f}% ({ml_correct}/{total_games})")
+        logger.info(f"Error Promedio Totales:    {avg_total_error:.2f} carreras")
         logger.info("-" * 70)
-        logger.info(f"Picks Realizados:       {total_picks}")
-        logger.info(f"Unidades Apostadas:     {total_staked:.2f} U")
-        logger.info(f"Beneficio Neto:         {profit:+.2f} U")
-        logger.info(f"ROI / Yield:            {roi:+.2f}%")
+        logger.info(f"Picks +EV Ejecutados:      {total_picks}")
+        logger.info(f"Hit Rate en Picks +EV:     {picks_hit_rate:.2f}%")
+        logger.info(f"Capital Apostado:          {total_staked:.2f} U")
+        logger.info(f"Beneficio Neto (PnL):      {profit:+.2f} U")
+        logger.info(f"ROI / Yield del Sistema:   {roi:+.2f}%")
         logger.info("=" * 70)
 
 
 def main():
-    """Ejecuta el tracking."""
     tracker = PerformanceTracker()
     df_audit = tracker.audit_predictions()
     tracker.generate_report(df_audit)
