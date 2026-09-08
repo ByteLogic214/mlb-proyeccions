@@ -1,16 +1,16 @@
 fecha,matchup,hom_team,away_team,hom_pitcher,away_pitcher,park_factor,hom_runs,away_runs,total_runs,ml_local_%,ml_visitante_%,cuota_local,cuota_visitante,pick_ev,stake_rec
-2026-09-08,Cleveland Guardians @ Baltimore Orioles,Baltimore Orioles,Cleveland Guardians,Brandon Young,Tanner Bibee,1.02,4.53,3.83,7.75,51.4,48.6,1.7936507936507935,2.08,Sin Valor Claro,0%
+2026-09-08,Cleveland Guardians @ Baltimore Orioles,Baltimore Orioles,Cleveland Guardians,Brandon Young,Tanner Bibee,1.02,4.53,3.83,7.75,51.4,48.6,1.819672131147541,2.04,Sin Valor Claro,0%
 2026-09-08,Minnesota Twins @ Detroit Tigers,Detroit Tigers,Minnesota Twins,Drew Anderson,Dean Kremer,0.95,4.1,4.61,8.33,48.8,51.2,1.704225352112676,2.2,Visitante (+EV 12.6%),2.6%
 2026-09-08,Houston Astros @ Philadelphia Phillies,Philadelphia Phillies,Houston Astros,Andrew Painter,Hayden Wesneski,1.06,4.45,3.94,8.8,52.2,47.8,1.704225352112676,2.2,Visitante (+EV 5.2%),1.1%
-2026-09-08,New York Mets @ Miami Marlins,Miami Marlins,New York Mets,Sandy Alcantara,Sean Manaea,0.93,4.12,4.3,8.34,49.4,50.6,1.7575757575757576,2.12,Visitante (+EV 7.3%),1.6%
-2026-09-08,Los Angeles Angels @ Boston Red Sox,Boston Red Sox,Los Angeles Angels,Patrick Sandoval,Reid Detmers,1.08,4.05,4.25,8.65,50.8,49.2,1.6944444444444444,2.2199999999999998,Visitante (+EV 9.2%),1.9%
-2026-09-08,Colorado Rockies @ New York Yankees,New York Yankees,Colorado Rockies,Cam Schlittler,Gabriel Hughes,0.98,4.37,3.85,8.28,57.1,42.9,1.2857142857142856,3.8,Visitante (+EV 63.0%),5.6%
+2026-09-08,New York Mets @ Miami Marlins,Miami Marlins,New York Mets,Sandy Alcantara,Sean Manaea,0.93,4.12,4.3,8.34,49.4,50.6,1.7936507936507935,2.08,Visitante (+EV 5.2%),1.2%
+2026-09-08,Los Angeles Angels @ Boston Red Sox,Boston Red Sox,Los Angeles Angels,Patrick Sandoval,Reid Detmers,1.08,4.07,4.25,8.66,51.3,48.7,1.6944444444444444,2.2199999999999998,Visitante (+EV 8.1%),1.7%
+2026-09-08,Colorado Rockies @ New York Yankees,New York Yankees,Colorado Rockies,Cam Schlittler,Gabriel Hughes,0.98,4.4,3.85,8.28,57.1,42.9,1.2985074626865671,3.7,Visitante (+EV 58.7%),5.4%
 2026-09-08,Tampa Bay Rays @ Atlanta Braves,Atlanta Braves,Tampa Bay Rays,AJ Smith-Shawver,Freddy Peralta,1.01,3.98,3.97,8.32,50.0,50.0,1.8620689655172413,1.9803921568627452,Sin Valor Claro,0%
 2026-09-08,Arizona Diamondbacks @ Kansas City Royals,Kansas City Royals,Arizona Diamondbacks,Michael Wacha,Corbin Burnes,1.05,4.23,4.46,8.92,50.0,50.0,1.99009900990099,1.8333333333333335,Sin Valor Claro,0%
 2026-09-08,Pittsburgh Pirates @ Chicago White Sox,Chicago White Sox,Pittsburgh Pirates,Sean Burke,Bubba Chandler,1.0,4.12,3.85,7.97,52.2,47.8,1.6849315068493151,2.24,Visitante (+EV 7.1%),1.4%
 2026-09-08,Chicago Cubs @ Milwaukee Brewers,Milwaukee Brewers,Chicago Cubs,Jacob Misiorowski,David Peterson,0.99,4.74,5.42,11.07,59.0,41.0,1.4545454545454546,2.84,Visitante (+EV 16.4%),2.2%
-2026-09-08,Washington Nationals @ San Diego Padres,San Diego Padres,Washington Nationals,Casey Mize,Riley Cornelio,0.92,3.96,3.92,8.55,54.4,45.6,1.5319148936170213,2.58,Visitante (+EV 17.6%),2.8%
-2026-09-08,Texas Rangers @ Seattle Mariners,Seattle Mariners,Texas Rangers,TBD,TBD,0.91,4.36,4.32,8.75,47.6,52.4,1.7462686567164178,2.16,Visitante (+EV 13.2%),2.8%
-2026-09-08,Toronto Blue Jays @ Athletics,Athletics,Toronto Blue Jays,Jack Perkins,José Soriano,0.96,4.7,5.75,10.74,48.8,51.2,2.48,1.5681818181818183,Local (+EV 21.0%),3.6%
-2026-09-08,St. Louis Cardinals @ San Francisco Giants,San Francisco Giants,St. Louis Cardinals,Landen Roupp,Quinn Mathews,0.95,4.04,4.04,8.6,51.0,49.0,1.8928571428571428,1.9615384615384617,Sin Valor Claro,0%
+2026-09-08,Washington Nationals @ San Diego Padres,San Diego Padres,Washington Nationals,Casey Mize,Riley Cornelio,0.92,3.96,3.92,8.55,54.4,45.6,1.5434782608695652,2.54,Visitante (+EV 15.8%),2.6%
+2026-09-08,Texas Rangers @ Seattle Mariners,Seattle Mariners,Texas Rangers,TBD,TBD,0.91,4.36,4.32,8.75,47.6,52.4,1.6944444444444444,2.2199999999999998,Visitante (+EV 16.3%),3.3%
+2026-09-08,Toronto Blue Jays @ Athletics,Athletics,Toronto Blue Jays,Jack Perkins,José Soriano,0.96,4.7,5.75,10.74,48.8,51.2,2.52,1.5555555555555556,Local (+EV 23.0%),3.8%
+2026-09-08,St. Louis Cardinals @ San Francisco Giants,San Francisco Giants,St. Louis Cardinals,Landen Roupp,Quinn Mathews,0.95,4.04,4.04,8.6,51.0,49.0,1.925925925925926,1.925925925925926,Sin Valor Claro,0%
 2026-09-08,Cincinnati Reds @ Los Angeles Dodgers,Los Angeles Dodgers,Cincinnati Reds,Tarik Skubal,Nick Lodolo,1.01,4.87,3.67,8.69,58.2,41.8,1.2985074626865671,3.7,Visitante (+EV 54.7%),5.1%
