@@ -13,7 +13,7 @@ from typing import Dict, List
 class APIConfig:
     """Configuración de APIs externas."""
     mlb_base_url: str = "https://statsapi.mlb.com/api/v1"
-    odds_api_url: str = "https://odds-api.io/api/v1/odds"
+    odds_api_url: str = "https://api.the-odds-api.com/v4/sports/baseball_mlb/odds/"
     odds_api_key: str = field(default_factory=lambda: os.getenv("ODDS_API_KEY", ""))
     timeout: int = 45
     max_retries: int = 4
@@ -28,7 +28,7 @@ class DataConfig:
     model_dir: str = "models"
     output_dir: str = "output"
     cache_ttl: int = 6 * 3600  # 6 horas
-    
+
 
 @dataclass
 class ModelConfig:
@@ -101,7 +101,7 @@ class ParkFactors:
         "Seattle Mariners": 0.91,
         "Athletics": 0.96,
     })
-    
+
     def get_factor(self, team_name: str) -> float:
         """Obtiene el factor de parque para un equipo."""
         return self.factors.get(team_name, 1.00)
@@ -109,14 +109,14 @@ class ParkFactors:
 
 class Config:
     """Configuración global del sistema."""
-    
+
     def __init__(self):
         self.api = APIConfig()
         self.data = DataConfig()
         self.model = ModelConfig()
         self.features = FeatureConfig()
         self.park_factors = ParkFactors()
-    
+
     def validate(self) -> bool:
         """Valida la configuración."""
         try:
