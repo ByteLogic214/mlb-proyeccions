@@ -4,7 +4,7 @@ MLB Betting ML System - Pro Edition
 Sistema de Machine Learning para proyección de mercados de apuestas MLB.
 
 Novedades:
-  - Integración con Odds-API.io para cuotas reales en vivo y cálculo de Expected Value (EV%).
+  - Integración con The Odds API (the-odds-api.com) para cuotas reales en vivo y cálculo de Expected Value (EV%).
   - Hidratación de abridores confirmados (Probable Pitchers) desde MLB Stats API.
   - Ajuste por Factores de Parque (Park Factor Adjustment).
   - Generación de Picks EV+ con recomendación de Stake.
@@ -38,7 +38,7 @@ OUTPUT_DIR = "output"
 WINDOWS = [3, 5, 10]
 
 ODDS_API_KEY = os.environ.get("ODDS_API_KEY", "")
-ODDS_API_URL = "https://odds-api.io/api/v1/odds"
+ODDS_API_URL = "https://api.the-odds-api.com/v4/sports/baseball_mlb/odds/"
 
 HITTING = ["runs", "hits", "doubles", "triples", "homeRuns", "totalBases",
            "strikeOuts", "baseOnBalls", "walk", "atBats"]
@@ -60,38 +60,37 @@ API_BASE = "https://statsapi.mlb.com/api/v1"
 CACHE_TTL = 6 * 3600  # 6 horas
 
 # Factores de Parque MLB (2025/2026 Baseline Index — 1.00 es Neutral)
-# Impacta la producción de Runs, Hits y HRs
 PARK_FACTORS = {
-    "Colorado Rockies": 1.35,       # Coors Field
-    "Boston Red Sox": 1.08,         # Fenway Park
-    "Cincinnati Reds": 1.12,        # Great American Ball Park
-    "Philadelphia Phillies": 1.06,  # Citizens Bank Park
-    "Kansas City Royals": 1.05,     # Kauffman Stadium
-    "Chicago Cubs": 1.04,           # Wrigley Field
-    "Baltimore Orioles": 1.02,      # Oriole Park
-    "Texas Rangers": 1.02,          # Globe Life Field
-    "Los Angeles Dodgers": 1.01,    # Dodger Stadium
-    "Atlanta Braves": 1.01,         # Truist Park
-    "Minnesota Twins": 1.00,        # Target Field
-    "Chicago White Sox": 1.00,      # Guaranteed Rate Field
-    "St. Louis Cardinals": 0.99,    # Busch Stadium
-    "Milwaukee Brewers": 0.99,      # American Family Field
-    "New York Yankees": 0.98,       # Yankee Stadium
-    "Houston Astros": 0.98,         # Minute Maid Park
-    "Toronto Blue Jays": 0.98,      # Rogers Centre
-    "Arizona Diamondbacks": 0.97,   # Chase Field
-    "Washington Nationals": 0.97,   # Nationals Park
-    "Los Angeles Angels": 0.96,     # Angel Stadium
-    "San Francisco Giants": 0.95,   # Oracle Park
-    "Detroit Tigers": 0.95,         # Comerica Park
-    "Pittsburgh Pirates": 0.95,     # PNC Park
-    "New York Mets": 0.94,          # Citi Field
-    "Cleveland Guardians": 0.94,    # Progressive Field
-    "Tampa Bay Rays": 0.93,         # Tropicana Field / Temp
-    "Miami Marlins": 0.93,          # loanDepot park
-    "San Diego Padres": 0.92,       # Petco Park
-    "Seattle Mariners": 0.91,       # T-Mobile Park
-    "Athletics": 0.96,              # Sutter Health Park / Temp
+    "Colorado Rockies": 1.35,
+    "Boston Red Sox": 1.08,
+    "Cincinnati Reds": 1.12,
+    "Philadelphia Phillies": 1.06,
+    "Kansas City Royals": 1.05,
+    "Chicago Cubs": 1.04,
+    "Baltimore Orioles": 1.02,
+    "Texas Rangers": 1.02,
+    "Los Angeles Dodgers": 1.01,
+    "Atlanta Braves": 1.01,
+    "Minnesota Twins": 1.00,
+    "Chicago White Sox": 1.00,
+    "St. Louis Cardinals": 0.99,
+    "Milwaukee Brewers": 0.99,
+    "New York Yankees": 0.98,
+    "Houston Astros": 0.98,
+    "Toronto Blue Jays": 0.98,
+    "Arizona Diamondbacks": 0.97,
+    "Washington Nationals": 0.97,
+    "Los Angeles Angels": 0.96,
+    "San Francisco Giants": 0.95,
+    "Detroit Tigers": 0.95,
+    "Pittsburgh Pirates": 0.95,
+    "New York Mets": 0.94,
+    "Cleveland Guardians": 0.94,
+    "Tampa Bay Rays": 0.93,
+    "Miami Marlins": 0.93,
+    "San Diego Padres": 0.92,
+    "Seattle Mariners": 0.91,
+    "Athletics": 0.96,
 }
 
 
@@ -134,9 +133,8 @@ def _parsear_calendario(payload: dict) -> pd.DataFrame:
     for dia in payload.get("dates", []):
         for g in dia.get("games", []):
             local = g.get("teams", {}).get("home", {})
-            visit = g.get("teams", {}).get("away", {})
-            
-            # Hidratación de abridores (Probable Pitchers)
+            visit = g.get("teams", {}).get("away", "")
+
             hom_p = local.get("probablePitcher", {}).get("fullName", "TBD")
             away_p = visit.get("probablePitcher", {}).get("fullName", "TBD")
             hom_p_id = local.get("probablePitcher", {}).get("id", None)
@@ -181,8 +179,8 @@ def calendario_dia(fecha: str) -> pd.DataFrame:
     if df is not None:
         return df
     payload = _get(
-        f"{API_BASE}/schedule", 
-        {"sportId": 1, "date": fecha, "hydrate": "probablePitcher"}
+        f"{API_BASE}/schedule",
+        {"sportId": 1, "date": fecha, "hydrate": "probablePitcher"},
     )
     df = _parsear_calendario(payload)
     if not df.empty:
@@ -216,38 +214,86 @@ def game_log_equipo(team_id: int, grupo: str) -> pd.DataFrame:
 
 
 def obtener_cuotas_odds_api(fecha: str) -> dict[str, dict[str, float]]:
-    """Consulta la API de odds-api.io para cruzar cuotas en vivo."""
+    """
+    Consulta The Odds API (the-odds-api.com) para cruzar cuotas en vivo.
+
+    Endpoint:
+        GET https://api.the-odds-api.com/v4/sports/baseball_mlb/odds/
+        ?apiKey=YOUR_KEY&regions=us&markets=h2h,totals&date=YYYY-MM-DD
+    """
     if not ODDS_API_KEY:
         print("  ⚠️ ODDS_API_KEY no configurada. Se omitirá el cálculo de EV%.")
         return {}
-    
+
+    params = {
+        "apiKey": ODDS_API_KEY,
+        "regions": "us",
+        "markets": "h2h,totals",
+        "oddsFormat": "american",
+        "date": fecha,
+    }
+
     try:
-        url = f"{ODDS_API_URL}?apiKey={ODDS_API_KEY}&sport=baseball_mlb&date={fecha}"
-        r = requests.get(url, timeout=15)
+        r = requests.get(ODDS_API_URL, params=params, timeout=15)
         if r.status_code != 200:
+            print(f"  ⚠️ The Odds API respondió HTTP {r.status_code}")
             return {}
+
         data = r.json()
+
         cuotas = {}
-        for game in data.get("data", []):
+
+        if not isinstance(data, list):
+            return cuotas
+
+        for game in data:
             home = game.get("home_team")
             away = game.get("away_team")
+
+            if not home or not away:
+                continue
+
             key = f"{away} @ {home}"
             bookmakers = game.get("bookmakers", [])
-            if bookmakers:
-                # Tomamos las cuotas promedio o del primer bookmaker principal
-                bm = bookmakers[0]
-                markets = bm.get("markets", {})
-                h_odds = markets.get("h2h", {}).get("home", 0.0)
-                a_odds = markets.get("h2h", {}).get("away", 0.0)
-                tot_line = markets.get("totals", {}).get("line", 0.0)
-                cuotas[key] = {
-                    "hom_ml_odds": float(h_odds),
-                    "away_ml_odds": float(a_odds),
-                    "total_line": float(tot_line),
-                }
+
+            if not bookmakers:
+                continue
+
+            # Tomar el primer bookmaker disponible
+            bm = bookmakers[0]
+            markets_list = bm.get("markets", [])
+
+            # Indexar mercados por key
+            markets = {m["key"]: m for m in markets_list}
+
+            # --- H2H (Moneyline) ---
+            h2h = markets.get("h2h", {})
+            h2h_outcomes = {
+                o["name"]: o.get("price", 0.0)
+                for o in h2h.get("outcomes", [])
+            }
+            h_odds = h2h_outcomes.get(home, 0.0)
+            a_odds = h2h_outcomes.get(away, 0.0)
+
+            # --- Totals ---
+            totals = markets.get("totals", {})
+            total_line = 0.0
+            for outcome in totals.get("outcomes", []):
+                if "point" in outcome:
+                    total_line = float(outcome["point"])
+                    break
+
+            cuotas[key] = {
+                "hom_ml_odds": float(h_odds),
+                "away_ml_odds": float(a_odds),
+                "total_line": float(total_line),
+            }
+
+        print(f"  ✅ Cuotas obtenidas para {len(cuotas)} partidos (The Odds API)")
         return cuotas
+
     except Exception as e:
-        print(f"  ⚠️ Error consultando Odds-API: {e}")
+        print(f"  ⚠️ Error consultando The Odds API: {e}")
         return {}
 
 
@@ -271,7 +317,7 @@ def parsear_innings(x):
     if isinstance(x, str) and "." in x:
         entero, _, resto = x.partition(".")
         try:
-            return float(entero) + {"0": 0.0, "1": 1/3, "2": 2/3}.get(resto[:1], 0.0)
+            return float(entero) + {"0": 0.0, "1": 1 / 3, "2": 2 / 3}.get(resto[:1], 0.0)
         except ValueError:
             pass
     return a_float(x)
@@ -463,135 +509,4 @@ def predecir_dia(fecha: str | None = None) -> pd.DataFrame:
     if juegos.empty:
         return pd.DataFrame()
 
-    proximos = juegos[juegos["status"].isin(["Scheduled", "Preview", "Pre-Game"])].copy()
-    if proximos.empty:
-        return pd.DataFrame()
-
-    equipos = cargar_equipos(proximos)
-    odds_data = obtener_cuotas_odds_api(fecha)
-
-    modelos = {}
-    for objetivo in TARGETS:
-        ruta = os.path.join(MODEL_DIR, f"{objetivo}.joblib")
-        if os.path.exists(ruta):
-            modelos[objetivo] = joblib.load(ruta)
-
-    filas = []
-    for _, g in proximos.iterrows():
-        gdate = pd.Timestamp(g["game_date"])
-        hid, aid = int(g["hom_team_id"]), int(g["away_team_id"])
-        pf = PARK_FACTORS.get(g["hom_team_name"], 1.00)
-
-        feat = {"park_factor": pf}
-        for lado, tid in [("hom", hid), ("away", aid)]:
-            eq = equipos.get(tid)
-            if not eq:
-                continue
-            for k, v in ultimas_características(eq["features"], gdate).items():
-                if k in ("date", "team_id", "opponent_id"):
-                    continue
-                feat[f"{lado}_{k}"] = v
-            feat[f"{lado}_descanso"] = dias_descanso(eq["hitting"], gdate)
-
-        pred = {
-            "fecha": fecha,
-            "matchup": f"{g['away_team_name']} @ {g['hom_team_name']}",
-            "hom_team": g["hom_team_name"],
-            "away_team": g["away_team_name"],
-            "hom_pitcher": g.get("hom_pitcher", "TBD"),
-            "away_pitcher": g.get("away_pitcher", "TBD"),
-            "park_factor": pf,
-        }
-
-        for objetivo, paquete in modelos.items():
-            X_row = pd.DataFrame([feat]).reindex(columns=paquete["features"], fill_value=0.0)
-            modelo = paquete["modelo"]
-            if objetivo == "hom_win":
-                proba = modelo.predict_proba(X_row)[0]
-                prob = proba[list(modelo.classes_).index(1)] if 1 in modelo.classes_ else 0.5
-                pred["ml_local_%"] = round(prob * 100, 1)
-                pred["ml_visitante_%"] = round((1 - prob) * 100, 1)
-            else:
-                val = float(modelo.predict(X_row)[0])
-                # Aplicación directa del Park Factor en métricas de anotación y bateo
-                if "runs" in objetivo or "hits" in objetivo or "total_bases" in objetivo:
-                    val = val * pf
-                pred[objetivo] = round(val, 2)
-
-        # Integración de Cuotas y Expected Value (EV%)
-        match_key = pred["matchup"]
-        cuota_info = odds_data.get(match_key, {})
-        h_odds = cuota_info.get("hom_ml_odds", 0.0)
-        a_odds = cuota_info.get("away_ml_odds", 0.0)
-
-        pred["cuota_local"] = h_odds if h_odds > 0 else "—"
-        pred["cuota_visitante"] = a_odds if a_odds > 0 else "—"
-
-        # Cálculo de EV% = (Prob * Cuota) - 1
-        prob_h = pred.get("ml_local_%", 50.0) / 100.0
-        prob_a = pred.get("ml_visitante_%", 50.0) / 100.0
-
-        ev_h = (prob_h * h_odds - 1) * 100 if h_odds > 1.0 else -999.0
-        ev_a = (prob_a * a_odds - 1) * 100 if a_odds > 1.0 else -999.0
-
-        if ev_h > 3.0:
-            pred["pick_ev"] = f"{g['hom_team_name']} ML (EV +{ev_h:.1f}%)"
-            pred["stake_rec"] = "1.5% Bankroll"
-        elif ev_a > 3.0:
-            pred["pick_ev"] = f"{g['away_team_name']} ML (EV +{ev_a:.1f}%)"
-            pred["stake_rec"] = "1.5% Bankroll"
-        else:
-            pred["pick_ev"] = "Sin Valor Claro"
-            pred["stake_rec"] = "0%"
-
-        filas.append(pred)
-
-    return pd.DataFrame(filas)
-
-
-# ---------------------------------------------------------------
-# Reportes Markdown
-# ---------------------------------------------------------------
-def guardar_reporte(pred: pd.DataFrame, fecha: str | None = None) -> tuple[str, str]:
-    fecha = fecha or datetime.date.today().strftime("%Y-%m-%d")
-    os.makedirs(OUTPUT_DIR, exist_ok=True)
-
-    csv_ruta = os.path.join(OUTPUT_DIR, f"predicciones_{fecha}.csv")
-    pred.to_csv(csv_ruta, index=False)
-
-    lineas = [
-        f"# ⚾ Predicciones MLB EV+ — {fecha}",
-        "",
-        "> Análisis probabilístico combinando Random Forest, Park Factors, Abridores y Cuotas en vivo.",
-        "",
-        "| Partido | Abridores (V/L) | Prob Local | Cuota L/V | Total Runs | Pick EV+ | Stake |",
-        "|---|---|---|---|---|---|---|",
-    ]
-    for _, r in pred.iterrows():
-        lineas.append(
-            f"| {r['matchup']} "
-            f"| {r['away_pitcher']} vs {r['hom_pitcher']} "
-            f"| {r.get('ml_local_%', '—')}% "
-            f"| {r.get('cuota_local', '—')} / {r.get('cuota_visitante', '—')} "
-            f"| {r.get('total_runs', '—')} "
-            f"| **{r.get('pick_ev', '—')}** "
-            f"| {r.get('stake_rec', '—')} |"
-        )
-
-    md_ruta = os.path.join(OUTPUT_DIR, f"predicciones_{fecha}.md")
-    with open(md_ruta, "w", encoding="utf-8") as f:
-        f.write("\n".join(lineas))
-    return md_ruta, csv_ruta
-
-
-def main():
-    fecha = sys.argv[1] if len(sys.argv) > 1 else None
-    entrenar_modelos()
-    pred = predecir_dia(fecha)
-    if not pred.empty:
-        md, csv = guardar_reporte(pred, fecha)
-        print(f"✅ Generado: {md} | {csv}")
-
-
-if __name__ == "__main__":
-    main()
+    proximos = juegos[juegos["status"].isin(["Scheduled", "
