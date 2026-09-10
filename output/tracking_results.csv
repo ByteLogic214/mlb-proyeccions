@@ -14,3 +14,18 @@ fecha,matchup,pred_winner,real_winner,ml_correct,pred_total,real_total,total_err
 2026-09-08,Toronto Blue Jays @ Athletics,away,away,True,10.74,6,4.74,True,Local (+EV 23.0%),3.8,-3.8
 2026-09-08,St. Louis Cardinals @ San Francisco Giants,home,home,True,8.6,3,5.6,False,Sin Valor Claro,0.0,0.0
 2026-09-08,Cincinnati Reds @ Los Angeles Dodgers,home,home,True,8.69,5,3.6899999999999995,True,Visitante (+EV 54.7%),5.1,-5.1
+2026-09-09,Minnesota Twins @ Detroit Tigers,away,home,False,8.33,9,0.6699999999999999,True,Visitante (+EV 6.3%),1.5,-1.5
+2026-09-09,Toronto Blue Jays @ Athletics,home,home,True,10.19,2,8.19,True,Local (+EV 25.5%),4.2,6.300000000000001
+2026-09-09,St. Louis Cardinals @ San Francisco Giants,home,home,True,8.68,13,4.32,True,Local (+EV 4.2%),1.1,1.1
+2026-09-09,Washington Nationals @ San Diego Padres,home,home,True,8.77,11,2.2300000000000004,True,Visitante (+EV 11.3%),1.8000000000000003,-1.8000000000000003
+2026-09-09,Texas Rangers @ Seattle Mariners,home,home,True,8.3,5,3.3000000000000007,True,Visitante (+EV 12.5%),2.4,-2.4
+2026-09-09,Cleveland Guardians @ Baltimore Orioles,home,home,True,7.47,14,6.53,False,Sin Valor Claro,0.0,0.0
+2026-09-09,Houston Astros @ Philadelphia Phillies,away,home,False,8.62,18,9.38,True,Visitante (+EV 17.8%),3.4000000000000004,-3.4000000000000004
+2026-09-09,New York Mets @ Miami Marlins,home,away,False,8.6,29,20.4,False,Sin Valor Claro,0.0,0.0
+2026-09-09,Los Angeles Angels @ Boston Red Sox,away,away,True,8.54,10,1.4600000000000009,True,Visitante (+EV 43.9%),6.1,10.979999999999999
+2026-09-09,Colorado Rockies @ New York Yankees,home,home,True,8.62,7,1.6199999999999992,True,Visitante (+EV 24.2%),3.0,-3.0
+2026-09-09,Tampa Bay Rays @ Atlanta Braves,home,away,False,8.7,9,0.3000000000000007,False,Sin Valor Claro,0.0,0.0
+2026-09-09,Arizona Diamondbacks @ Kansas City Royals,away,home,False,8.68,7,1.6799999999999997,False,Sin Valor Claro,0.0,0.0
+2026-09-09,Pittsburgh Pirates @ Chicago White Sox,home,away,False,8.51,6,2.51,True,Visitante (+EV 3.2%),0.7,0.812
+2026-09-09,Chicago Cubs @ Milwaukee Brewers,home,home,True,9.84,14,4.16,False,Sin Valor Claro,0.0,0.0
+2026-09-09,Cincinnati Reds @ Los Angeles Dodgers,home,home,True,8.45,15,6.550000000000001,True,Visitante (+EV 35.3%),3.7000000000000006,-3.7000000000000006

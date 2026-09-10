@@ -1,0 +1,6 @@
+fecha,matchup,hom_team,away_team,hom_pitcher,away_pitcher,park_factor,hom_runs,away_runs,total_runs,ml_local_%,ml_visitante_%,cuota_local,cuota_visitante,pick_ev,stake_rec
+2026-09-10,Tampa Bay Rays @ Atlanta Braves,Atlanta Braves,Tampa Bay Rays,Martín Pérez,Nick Martinez,1.01,4.07,3.67,8.17,51.9,48.1,1.7874015748031495,2.05,Sin Valor Claro,0%
+2026-09-10,Houston Astros @ Philadelphia Phillies,Philadelphia Phillies,Houston Astros,Zack Wheeler,Cristian Javier,1.06,4.45,3.88,8.4,51.3,48.7,1.5434782608695652,2.54,Visitante (+EV 23.7%),3.8%
+2026-09-10,Texas Rangers @ Seattle Mariners,Seattle Mariners,Texas Rangers,Logan Gilbert,Jacob deGrom,0.91,4.02,4.01,8.23,53.7,46.3,1.7692307692307692,2.08,Sin Valor Claro,0%
+2026-09-10,Colorado Rockies @ New York Yankees,New York Yankees,Colorado Rockies,Max Fried,Ryan Feltner,0.98,4.75,3.95,8.55,57.0,43.0,1.3322259136212624,3.39,Visitante (+EV 45.8%),4.8%
+2026-09-10,Pittsburgh Pirates @ Chicago White Sox,Chicago White Sox,Pittsburgh Pirates,Hagen Smith,Jared Jones,1.0,4.76,3.9,8.58,55.8,44.2,1.925925925925926,1.925925925925926,Local (+EV 7.5%),2.0%
