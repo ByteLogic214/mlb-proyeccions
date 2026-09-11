@@ -29,3 +29,8 @@ fecha,matchup,pred_winner,real_winner,ml_correct,pred_total,real_total,total_err
 2026-09-09,Pittsburgh Pirates @ Chicago White Sox,home,away,False,8.51,6,2.51,True,Visitante (+EV 3.2%),0.7,0.812
 2026-09-09,Chicago Cubs @ Milwaukee Brewers,home,home,True,9.84,14,4.16,False,Sin Valor Claro,0.0,0.0
 2026-09-09,Cincinnati Reds @ Los Angeles Dodgers,home,home,True,8.45,15,6.550000000000001,True,Visitante (+EV 35.3%),3.7000000000000006,-3.7000000000000006
+2026-09-10,Tampa Bay Rays @ Atlanta Braves,home,home,True,8.17,4,4.17,False,Sin Valor Claro,0.0,0.0
+2026-09-10,Houston Astros @ Philadelphia Phillies,home,away,False,8.4,3,5.4,True,Visitante (+EV 23.7%),3.8,5.851999999999999
+2026-09-10,Texas Rangers @ Seattle Mariners,home,home,True,8.23,7,1.2300000000000004,False,Sin Valor Claro,0.0,0.0
+2026-09-10,Colorado Rockies @ New York Yankees,home,home,True,8.55,13,4.449999999999999,True,Visitante (+EV 45.8%),4.8,-4.8
+2026-09-10,Pittsburgh Pirates @ Chicago White Sox,home,away,False,8.58,2,6.58,True,Local (+EV 7.5%),2.0,-2.0
