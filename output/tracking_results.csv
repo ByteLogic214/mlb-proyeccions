@@ -34,3 +34,18 @@ fecha,matchup,pred_winner,real_winner,ml_correct,pred_total,real_total,total_err
 2026-09-10,Texas Rangers @ Seattle Mariners,home,home,True,8.23,7,1.2300000000000004,False,Sin Valor Claro,0.0,0.0
 2026-09-10,Colorado Rockies @ New York Yankees,home,home,True,8.55,13,4.449999999999999,True,Visitante (+EV 45.8%),4.8,-4.8
 2026-09-10,Pittsburgh Pirates @ Chicago White Sox,home,away,False,8.58,2,6.58,True,Local (+EV 7.5%),2.0,-2.0
+2026-09-11,Pittsburgh Pirates @ Chicago Cubs,home,home,True,9.16,14,4.84,True,Visitante (+EV 18.0%),2.8,-2.8
+2026-09-11,Colorado Rockies @ Detroit Tigers,home,home,True,8.5,8,0.5,True,Visitante (+EV 10.0%),1.6,-1.6
+2026-09-11,Los Angeles Angels @ Washington Nationals,home,home,True,8.86,7,1.8599999999999994,False,Sin Valor Claro,0.0,0.0
+2026-09-11,New York Mets @ New York Yankees,home,home,True,7.95,10,2.05,False,Sin Valor Claro,0.0,0.0
+2026-09-11,Baltimore Orioles @ Toronto Blue Jays,home,away,False,8.97,11,2.0299999999999994,False,Sin Valor Claro,0.0,0.0
+2026-09-11,Kansas City Royals @ Boston Red Sox,home,away,False,8.92,5,3.92,True,Visitante (+EV 19.3%),2.9,4.872
+2026-09-11,Houston Astros @ Tampa Bay Rays,home,home,True,8.63,4,4.630000000000001,True,Visitante (+EV 12.0%),2.1,-2.1
+2026-09-11,Los Angeles Dodgers @ Miami Marlins,away,away,True,7.81,8,0.1900000000000004,True,Local (+EV 39.4%),5.2,-5.2
+2026-09-11,Philadelphia Phillies @ Atlanta Braves,away,home,False,8.49,11,2.51,True,Visitante (+EV 39.9%),6.2,-6.2
+2026-09-11,Cincinnati Reds @ Milwaukee Brewers,home,home,True,8.89,20,11.11,True,Visitante (+EV 13.3%),2.0,-2.0
+2026-09-11,Cleveland Guardians @ Minnesota Twins,away,away,True,7.51,7,0.5099999999999998,False,Sin Valor Claro,0.0,0.0
+2026-09-11,Chicago White Sox @ St. Louis Cardinals,away,home,False,8.74,10,1.2599999999999998,False,Sin Valor Claro,0.0,0.0
+2026-09-11,Seattle Mariners @ Athletics,away,home,False,9.9,11,1.0999999999999996,True,Local (+EV 8.5%),1.5,2.07
+2026-09-11,Texas Rangers @ Arizona Diamondbacks,home,home,True,8.54,10,1.4600000000000009,False,Sin Valor Claro,0.0,0.0
+2026-09-11,San Diego Padres @ San Francisco Giants,away,away,True,8.65,12,3.3499999999999996,True,Local (+EV 7.1%),1.4,-1.4
