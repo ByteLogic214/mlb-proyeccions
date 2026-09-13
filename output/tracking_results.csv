@@ -49,3 +49,18 @@ fecha,matchup,pred_winner,real_winner,ml_correct,pred_total,real_total,total_err
 2026-09-11,Seattle Mariners @ Athletics,away,home,False,9.9,11,1.0999999999999996,True,Local (+EV 8.5%),1.5,2.07
 2026-09-11,Texas Rangers @ Arizona Diamondbacks,home,home,True,8.54,10,1.4600000000000009,True,Local (+EV 5.6%),1.6,1.3793103448275859
 2026-09-11,San Diego Padres @ San Francisco Giants,away,away,True,8.65,12,3.3499999999999996,True,Local (+EV 7.1%),1.4,-1.4
+2026-09-12,Colorado Rockies @ Detroit Tigers,home,home,True,8.91,18,9.09,False,Sin Valor Claro,0.0,0.0
+2026-09-12,New York Mets @ New York Yankees,home,away,False,9.33,14,4.67,True,Visitante (+EV 10.7%),1.9,2.622
+2026-09-12,Pittsburgh Pirates @ Chicago Cubs,home,home,True,9.11,7,2.1099999999999994,False,Sin Valor Claro,0.0,0.0
+2026-09-12,Baltimore Orioles @ Toronto Blue Jays,home,home,True,8.44,10,1.5600000000000005,False,Sin Valor Claro,0.0,0.0
+2026-09-12,Los Angeles Angels @ Washington Nationals,home,home,True,8.97,11,2.0299999999999994,False,Sin Valor Claro,0.0,0.0
+2026-09-12,San Diego Padres @ San Francisco Giants,away,away,True,8.84,13,4.16,True,Local (+EV 13.6%),2.3,-2.3
+2026-09-12,Kansas City Royals @ Boston Red Sox,home,home,True,8.33,6,2.33,True,Visitante (+EV 19.0%),2.6,-2.6
+2026-09-12,Cleveland Guardians @ Minnesota Twins,away,home,False,7.76,7,0.7599999999999998,False,Sin Valor Claro,0.0,0.0
+2026-09-12,Los Angeles Dodgers @ Miami Marlins,away,home,False,8.64,7,1.6400000000000006,True,Local (+EV 8.2%),1.3,2.0020000000000002
+2026-09-12,Houston Astros @ Tampa Bay Rays,home,home,True,8.41,5,3.41,False,Sin Valor Claro,0.0,0.0
+2026-09-12,Cincinnati Reds @ Milwaukee Brewers,home,home,True,8.61,22,13.39,True,Visitante (+EV 7.2%),1.1,-1.1
+2026-09-12,Philadelphia Phillies @ Atlanta Braves,away,home,False,8.46,14,5.539999999999999,True,Visitante (+EV 15.8%),3.4000000000000004,-3.4000000000000004
+2026-09-12,Chicago White Sox @ St. Louis Cardinals,home,away,False,9.03,11,1.9700000000000006,False,Sin Valor Claro,0.0,0.0
+2026-09-12,Texas Rangers @ Arizona Diamondbacks,away,away,True,8.93,8,0.9299999999999997,True,Visitante (+EV 6.3%),1.4,1.54
+2026-09-12,Seattle Mariners @ Athletics,away,away,True,9.75,20,10.25,True,Local (+EV 20.3%),3.4000000000000004,-3.4000000000000004
