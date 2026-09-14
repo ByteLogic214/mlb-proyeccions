@@ -64,3 +64,18 @@ fecha,matchup,pred_winner,real_winner,ml_correct,pred_total,real_total,total_err
 2026-09-12,Chicago White Sox @ St. Louis Cardinals,home,away,False,9.03,11,1.9700000000000006,False,Sin Valor Claro,0.0,0.0
 2026-09-12,Texas Rangers @ Arizona Diamondbacks,away,away,True,8.93,8,0.9299999999999997,True,Visitante (+EV 6.3%),1.4,1.54
 2026-09-12,Seattle Mariners @ Athletics,away,away,True,9.75,20,10.25,True,Local (+EV 20.3%),3.4000000000000004,-3.4000000000000004
+2026-09-13,Colorado Rockies @ Detroit Tigers,home,home,True,8.65,9,0.34999999999999964,True,Visitante (+EV 14.0%),2.3,-2.3
+2026-09-13,Los Angeles Angels @ Washington Nationals,home,home,True,8.95,11,2.0500000000000007,False,Sin Valor Claro,0.0,0.0
+2026-09-13,Philadelphia Phillies @ Atlanta Braves,away,away,True,8.69,13,4.3100000000000005,True,Visitante (+EV 8.6%),1.9,2.09
+2026-09-13,New York Mets @ New York Yankees,home,home,True,8.42,2,6.42,True,Visitante (+EV 13.0%),2.1,-2.1
+2026-09-13,Baltimore Orioles @ Toronto Blue Jays,home,home,True,8.22,9,0.7799999999999994,True,Visitante (+EV 5.5%),1.1,-1.1
+2026-09-13,Houston Astros @ Tampa Bay Rays,home,home,True,8.67,18,9.33,False,Sin Valor Claro,0.0,0.0
+2026-09-13,Los Angeles Dodgers @ Miami Marlins,away,home,False,8.32,10,1.6799999999999997,False,Sin Valor Claro,0.0,0.0
+2026-09-13,Cleveland Guardians @ Minnesota Twins,away,away,True,7.81,11,3.1900000000000004,True,Visitante (+EV 8.8%),2.1,2.2260000000000004
+2026-09-13,Cincinnati Reds @ Milwaukee Brewers,home,away,False,9.39,7,2.3900000000000006,True,Visitante (+EV 16.8%),2.7,4.158
+2026-09-13,Chicago White Sox @ St. Louis Cardinals,away,home,False,9.13,4,5.130000000000001,False,Sin Valor Claro,0.0,0.0
+2026-09-13,Pittsburgh Pirates @ Chicago Cubs,away,away,True,9.2,7,2.1999999999999993,True,Visitante (+EV 17.9%),3.4000000000000004,4.488000000000001
+2026-09-13,Kansas City Royals @ Boston Red Sox,home,home,True,8.81,5,3.8100000000000005,True,Visitante (+EV 5.7%),0.9000000000000001,-0.9000000000000001
+2026-09-13,Seattle Mariners @ Athletics,away,home,False,9.95,15,5.050000000000001,False,Sin Valor Claro,0.0,0.0
+2026-09-13,Texas Rangers @ Arizona Diamondbacks,away,away,True,8.62,13,4.380000000000001,True,Visitante (+EV 10.3%),2.3,2.53
+2026-09-13,San Diego Padres @ San Francisco Giants,home,away,False,8.8,10,1.1999999999999993,True,Local (+EV 10.2%),2.4,-2.4
