@@ -1,0 +1,11 @@
+fecha,matchup,hom_team,away_team,hom_pitcher,away_pitcher,park_factor,hom_runs,away_runs,total_runs,ml_local_%,ml_visitante_%,cuota_local,cuota_visitante,pick_ev,stake_rec
+2026-09-14,Los Angeles Dodgers @ Cincinnati Reds,Cincinnati Reds,Los Angeles Dodgers,Nick Lodolo,Tarik Skubal,1.12,4.55,4.87,9.14,45.3,54.7,2.8,1.4651162790697674,Local (+EV 26.8%),3.7%
+2026-09-14,Chicago White Sox @ Cleveland Guardians,Cleveland Guardians,Chicago White Sox,Gavin Williams,Sean Newcomb,0.94,4.43,4.49,8.7,50.4,49.6,1.6493506493506493,2.3,Visitante (+EV 14.1%),2.7%
+2026-09-14,Detroit Tigers @ Toronto Blue Jays,Toronto Blue Jays,Detroit Tigers,José Soriano,Troy Melton,0.98,4.1,4.19,8.29,52.1,47.9,1.7246376811594204,2.1799999999999997,Visitante (+EV 4.4%),0.9%
+2026-09-14,Baltimore Orioles @ New York Mets,New York Mets,Baltimore Orioles,Jonah Tong,Brandon Young,0.94,4.93,4.73,8.96,49.4,50.6,1.819672131147541,2.04,Visitante (+EV 3.2%),0.8%
+2026-09-14,Atlanta Braves @ Chicago Cubs,Chicago Cubs,Atlanta Braves,David Peterson,Reynaldo López,1.04,4.77,4.2,9.8,47.5,52.5,1.7462686567164178,2.16,Visitante (+EV 13.4%),2.9%
+2026-09-14,New York Yankees @ Minnesota Twins,Minnesota Twins,New York Yankees,Dean Kremer,Will Warren,1.0,3.6,4.03,8.0,43.7,56.3,2.06,1.8064516129032258,Sin Valor Claro,0%
+2026-09-14,San Francisco Giants @ St. Louis Cardinals,St. Louis Cardinals,San Francisco Giants,Quinn Mathews,Landen Roupp,0.99,4.45,4.38,8.51,53.4,46.6,1.7246376811594204,2.1799999999999997,Sin Valor Claro,0%
+2026-09-14,San Diego Padres @ Colorado Rockies,Colorado Rockies,San Diego Padres,Tomoyuki Sugano,Casey Mize,1.35,5.36,5.49,11.17,49.9,50.1,2.66,1.5050505050505052,Local (+EV 32.7%),4.9%
+2026-09-14,Seattle Mariners @ Los Angeles Angels,Los Angeles Angels,Seattle Mariners,Reid Detmers,Kade Anderson,0.96,3.92,3.85,8.1,51.4,48.6,1.9803921568627452,1.8620689655172413,Sin Valor Claro,0%
+2026-09-14,Miami Marlins @ Arizona Diamondbacks,Arizona Diamondbacks,Miami Marlins,Corbin Burnes,Sandy Alcantara,0.97,4.68,3.85,9.05,59.2,40.8,1.7575757575757576,2.12,Local (+EV 4.0%),1.3%
