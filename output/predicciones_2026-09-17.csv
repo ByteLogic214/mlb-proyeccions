@@ -1,0 +1,10 @@
+fecha,matchup,hom_team,away_team,hom_pitcher,away_pitcher,park_factor,hom_runs,away_runs,total_runs,ml_local_%,ml_visitante_%,cuota_local,cuota_visitante,pick_ev,stake_rec
+2026-09-17,Milwaukee Brewers @ Pittsburgh Pirates,Pittsburgh Pirates,Milwaukee Brewers,Wilber Dotel,Kyle Harrison,0.95,3.98,4.16,8.25,52.2,47.8,2.16,1.7352941176470589,Local (+EV 12.8%),2.7%
+2026-09-17,Los Angeles Dodgers @ Cincinnati Reds,Cincinnati Reds,Los Angeles Dodgers,Brady Singer,Justin Wrobleski,1.12,3.77,4.76,8.51,42.5,57.5,2.4,1.6024096385542168,Sin Valor Claro,0%
+2026-09-17,Athletics @ Tampa Bay Rays,Tampa Bay Rays,Athletics,Drew Rasmussen,Jeffrey Springs,0.93,4.94,3.97,8.95,62.5,37.5,1.3584229390681004,3.24,Visitante (+EV 21.5%),2.4%
+2026-09-17,San Diego Padres @ Colorado Rockies,Colorado Rockies,San Diego Padres,Tanner Gordon,Michael King,1.35,4.9,6.6,11.69,42.9,57.1,2.66,1.4926108374384237,Local (+EV 14.1%),2.1%
+2026-09-17,Kansas City Royals @ Houston Astros,Houston Astros,Kansas City Royals,TBD,Seth Lugo,0.98,4.31,4.51,8.72,51.7,48.3,1.6493506493506493,2.3,Visitante (+EV 11.1%),2.1%
+2026-09-17,Philadelphia Phillies @ New York Mets,New York Mets,Philadelphia Phillies,Nolan McLean,Aaron Nola,0.94,4.68,4.49,8.64,48.4,51.6,1.7575757575757576,2.12,Visitante (+EV 9.4%),2.1%
+2026-09-17,Detroit Tigers @ Chicago White Sox,Chicago White Sox,Detroit Tigers,Erick Fedde,Framber Valdez,1.0,4.18,3.87,8.68,50.2,49.8,1.8928571428571428,1.9615384615384617,Sin Valor Claro,0%
+2026-09-17,Boston Red Sox @ Texas Rangers,Texas Rangers,Boston Red Sox,Tyler Alexander,Sonny Gray,1.02,3.87,3.93,8.46,47.4,52.6,2.06,1.8064516129032258,Sin Valor Claro,0%
+2026-09-17,Minnesota Twins @ Los Angeles Angels,Los Angeles Angels,Minnesota Twins,Walbert Ureña,Taj Bradley,0.96,4.6,4.32,8.77,59.0,41.0,1.9615384615384617,1.8928571428571428,Local (+EV 15.7%),4.1%
