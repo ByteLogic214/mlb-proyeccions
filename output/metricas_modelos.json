@@ -1,0 +1,111 @@
+{
+  "season": 2026,
+  "generado": "2026-09-18T09:13:02.504420",
+  "n_juegos": 2257,
+  "modelos": {
+    "hom_runs": {
+      "n_test": 452,
+      "rmse": 3.2661,
+      "mae": 2.4402,
+      "r2": -0.0202,
+      "calibrado": false,
+      "n_train_full": 2257
+    },
+    "away_runs": {
+      "n_test": 452,
+      "rmse": 3.1706,
+      "mae": 2.4717,
+      "r2": 0.0115,
+      "calibrado": false,
+      "n_train_full": 2257
+    },
+    "total_runs": {
+      "n_test": 452,
+      "rmse": 4.526,
+      "mae": 3.5493,
+      "r2": -0.0069,
+      "calibrado": false,
+      "n_train_full": 2257
+    },
+    "hom_hits": {
+      "n_test": 452,
+      "rmse": 3.43,
+      "mae": 2.6503,
+      "r2": 0.0182,
+      "calibrado": false,
+      "n_train_full": 2257
+    },
+    "away_hits": {
+      "n_test": 452,
+      "rmse": 3.5233,
+      "mae": 2.8052,
+      "r2": -0.0029,
+      "calibrado": false,
+      "n_train_full": 2257
+    },
+    "hom_total_bases": {
+      "n_test": 452,
+      "rmse": 6.4207,
+      "mae": 4.8626,
+      "r2": -0.0061,
+      "calibrado": false,
+      "n_train_full": 2257
+    },
+    "away_total_bases": {
+      "n_test": 452,
+      "rmse": 6.5027,
+      "mae": 5.0385,
+      "r2": 0.008,
+      "calibrado": false,
+      "n_train_full": 2257
+    },
+    "hom_k": {
+      "n_test": 452,
+      "rmse": 2.9192,
+      "mae": 2.3139,
+      "r2": 0.0305,
+      "calibrado": false,
+      "n_train_full": 2257
+    },
+    "away_k": {
+      "n_test": 452,
+      "rmse": 2.7968,
+      "mae": 2.2819,
+      "r2": 0.0339,
+      "calibrado": false,
+      "n_train_full": 2257
+    },
+    "hom_p_k": {
+      "n_test": 452,
+      "rmse": 2.7715,
+      "mae": 2.2599,
+      "r2": 0.0513,
+      "calibrado": false,
+      "n_train_full": 2257
+    },
+    "away_p_k": {
+      "n_test": 452,
+      "rmse": 2.8951,
+      "mae": 2.2991,
+      "r2": 0.0273,
+      "calibrado": false,
+      "n_train_full": 2257
+    },
+    "total_k": {
+      "n_test": 452,
+      "rmse": 4.1619,
+      "mae": 3.33,
+      "r2": -0.0146,
+      "calibrado": false,
+      "n_train_full": 2257
+    },
+    "hom_win": {
+      "n_test": 452,
+      "accuracy": 0.5111,
+      "log_loss": 0.6877,
+      "brier": 0.2473,
+      "calibrado": false,
+      "n_train_full": 2257
+    }
+  }
+}

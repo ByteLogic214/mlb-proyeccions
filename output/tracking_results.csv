@@ -119,3 +119,12 @@ fecha,matchup,pred_winner,real_winner,ml_correct,pred_total,real_total,total_err
 2026-09-16,San Diego Padres @ Colorado Rockies,away,away,True,11.77,12,0.23000000000000043,True,Local (+EV 9.9%),1.8000000000000003,-1.8000000000000003
 2026-09-16,Seattle Mariners @ Los Angeles Angels,home,away,False,8.57,9,0.4299999999999997,True,Local (+EV 12.9%),2.7,-2.7
 2026-09-16,Miami Marlins @ Arizona Diamondbacks,home,away,False,9.59,7,2.59,False,Sin Valor Claro,0.0,0.0
+2026-09-17,Milwaukee Brewers @ Pittsburgh Pirates,home,home,True,8.25,11,2.75,True,Local (+EV 10.7%),2.4,2.688
+2026-09-17,Los Angeles Dodgers @ Cincinnati Reds,away,away,True,8.51,10,1.4900000000000002,False,Sin Valor Claro,0.0,0.0
+2026-09-17,Athletics @ Tampa Bay Rays,home,home,True,8.95,11,2.0500000000000007,True,Visitante (+EV 21.5%),2.4,-2.4
+2026-09-17,San Diego Padres @ Colorado Rockies,away,away,True,11.69,11,0.6899999999999995,True,Local (+EV 14.1%),2.1,-2.1
+2026-09-17,Kansas City Royals @ Houston Astros,home,home,True,8.72,8,0.7200000000000006,True,Visitante (+EV 11.1%),2.1,-2.1
+2026-09-17,Philadelphia Phillies @ New York Mets,away,away,True,8.64,3,5.640000000000001,True,Visitante (+EV 9.4%),2.1,2.3520000000000003
+2026-09-17,Detroit Tigers @ Chicago White Sox,home,home,True,8.68,4,4.68,False,Sin Valor Claro,0.0,0.0
+2026-09-17,Boston Red Sox @ Texas Rangers,away,away,True,8.46,7,1.4600000000000009,False,Sin Valor Claro,0.0,0.0
+2026-09-17,Minnesota Twins @ Los Angeles Angels,home,home,True,8.77,9,0.23000000000000043,True,Local (+EV 15.7%),4.1,3.9423076923076925
