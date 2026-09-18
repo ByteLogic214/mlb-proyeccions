@@ -1,13 +1,23 @@
 """
-MLB Betting ML System - Pro Edition
-===================================
+MLB Betting ML System - Pro Edition v2.0
+========================================
 Sistema de Machine Learning para proyección de mercados de apuestas MLB.
 
-Novedades:
-  - Integración con The Odds API (the-odds-api.com) para cuotas reales en vivo y cálculo de Expected Value (EV%).
-  - Hidratación de abridores confirmados (Probable Pitchers) desde MLB Stats API.
-  - Ajuste por Factores de Parque (Park Factor Adjustment).
-  - Generación de Picks EV+ con recomendación de Stake.
+Novedades v2.0 (drop-in, compatible con workflow y track.py):
+  - Construcción real de TODOS los targets (hits, total bases, K de bateadores,
+    K de pitchers, total K). En v1.x solo se entrenaban 4 de 12 objetivos.
+  - Evaluación temporal honesta en holdout (20% más reciente): accuracy,
+    log-loss y Brier para moneyline; RMSE/MAE/R² para regresores.
+  - Calibración de probabilidades del clasificador (CalibratedClassifierCV,
+    sigmoid) para que el cálculo de EV/+EV sea fiable.
+  - Re-fit final sobre el 100% de los datos tras la evaluación (sin fuga).
+  - Persistencia de métricas en output/metricas_modelos.json (auditabilidad).
+
+Incluye lo anterior:
+  - Integración con The Odds API para cuotas reales y cálculo de EV%.
+  - Hidratación de abridores confirmados (Probable Pitchers).
+  - Ajuste por Factores de Parque.
+  - Generación de Picks EV+ con recomendación de Stake (Kelly fraccional 1/4).
 
 Uso:
     python mlb_betting.py [AAAA-MM-DD]
@@ -16,6 +26,7 @@ Uso:
 from __future__ import annotations
 
 import datetime
+import json
 import os
 import sys
 import time
@@ -26,7 +37,20 @@ import numpy as np
 import pandas as pd
 import requests
 from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
-from sklearn.metrics import accuracy_score, mean_squared_error, r2_score
+from sklearn.metrics import (
+    accuracy_score,
+    brier_score_loss,
+    log_loss,
+    mean_absolute_error,
+    mean_squared_error,
+    r2_score,
+)
+
+try:  # Calibración disponible desde sklearn 0.22; fallback al RF crudo.
+    from sklearn.calibration import CalibratedClassifierCV
+    CALIBRACION_DISPONIBLE = True
+except ImportError:  # pragma: no cover
+    CALIBRACION_DISPONIBLE = False
 
 # ---------------------------------------------------------------
 # Configuración y Constantes
@@ -54,6 +78,19 @@ TARGETS = [
     "hom_p_k", "away_p_k",
     "total_k",
     "hom_win",
+]
+
+# Targets ampliados resueltos desde game logs en v2.0:
+#   hits/totalBases/strikeOuts (bateo) -> hom_hits, away_hits, hom_total_bases,
+#                                          away_total_bases, hom_k, away_k
+#   strikeOuts (pitcheo)               -> hom_p_k, away_p_k  (K de pitchers)
+#   total_k                            -> hom_p_k + away_p_k
+TARGETS_FROM_LOGS = [
+    "hom_hits", "away_hits",
+    "hom_total_bases", "away_total_bases",
+    "hom_k", "away_k",
+    "hom_p_k", "away_p_k",
+    "total_k",
 ]
 
 API_BASE = "https://statsapi.mlb.com/api/v1"
@@ -383,6 +420,23 @@ def ultimas_características(frame: pd.DataFrame, fecha: pd.Timestamp) -> dict:
     return previos.sort_values("date").iloc[-1].to_dict()
 
 
+def stat_del_juego(log: pd.DataFrame, fecha: pd.Timestamp, col: str) -> float:
+    """
+    v2.0: Devuelve el valor REAL de una estadística (`col`) en el juego
+    disputado exactamente en `fecha` según el game log del equipo.
+
+    Usado para construir los targets ampliados (hits, total bases, K).
+    Devuelve np.nan si el juego no aparece en el log (p. ej., doble
+    cartelera con fecha desplazada) — esas filas se excluyen del training.
+    """
+    if log is None or log.empty or col not in log.columns:
+        return np.nan
+    fila = log[log["date"] == fecha]
+    if fila.empty:
+        return np.nan
+    return a_float(fila.iloc[-1][col])
+
+
 def dias_descanso(df: pd.DataFrame, fecha: pd.Timestamp) -> float:
     if df is None or df.empty:
         return 0.0
@@ -443,8 +497,10 @@ def construir_datos() -> pd.DataFrame:
 
         feat = {"game_date": gdate, "park_factor": pf}
 
-        for lado, tid in [("hom", hid), ("away", aid)]:
-            eq = equipos.get(tid)
+        eq_h = equipos.get(hid)
+        eq_a = equipos.get(aid)
+
+        for lado, eq in [("hom", eq_h), ("away", eq_a)]:
             if not eq:
                 continue
             for k, v in ultimas_características(eq["features"], gdate).items():
@@ -458,6 +514,21 @@ def construir_datos() -> pd.DataFrame:
         feat["total_runs"] = feat["hom_runs"] + feat["away_runs"]
         feat["hom_win"] = 1 if feat["hom_runs"] > feat["away_runs"] else 0
 
+        # v2.0 — Targets ampliados desde game logs reales del juego:
+        if eq_h:
+            feat["hom_hits"] = stat_del_juego(eq_h["hitting"], gdate, "hits")
+            feat["hom_total_bases"] = stat_del_juego(eq_h["hitting"], gdate, "totalBases")
+            feat["hom_k"] = stat_del_juego(eq_h["hitting"], gdate, "strikeOuts")
+            feat["hom_p_k"] = stat_del_juego(eq_h["pitching"], gdate, "strikeOuts")
+        if eq_a:
+            feat["away_hits"] = stat_del_juego(eq_a["hitting"], gdate, "hits")
+            feat["away_total_bases"] = stat_del_juego(eq_a["hitting"], gdate, "totalBases")
+            feat["away_k"] = stat_del_juego(eq_a["hitting"], gdate, "strikeOuts")
+            feat["away_p_k"] = stat_del_juego(eq_a["pitching"], gdate, "strikeOuts")
+
+        if not pd.isna(feat.get("hom_p_k", np.nan)) and not pd.isna(feat.get("away_p_k", np.nan)):
+            feat["total_k"] = feat["hom_p_k"] + feat["away_p_k"]
+
         filas.append(feat)
 
     df = pd.DataFrame(filas)
@@ -465,12 +536,75 @@ def construir_datos() -> pd.DataFrame:
         return df
 
     cols_feat = [c for c in df.columns if c not in TARGETS and c != "game_date"]
-    return df.dropna(subset=cols_feat, how="all")
+    df = df.dropna(subset=cols_feat, how="all")
+
+    # v2.0 — Excluir filas cuyos targets ampliados no pudieron resolverse.
+    targets_presentes = [t for t in TARGETS_FROM_LOGS if t in df.columns]
+    if targets_presentes:
+        antes = len(df)
+        df = df.dropna(subset=targets_presentes)
+        descartadas = antes - len(df)
+        if descartadas:
+            print(f"  ℹ️ {descartadas} juegos sin game log cruzable descartados del entrenamiento.")
+
+    return df
 
 
 # ---------------------------------------------------------------
-# Entrenamiento de Modelos
+# Entrenamiento y Evaluación de Modelos (v2.0)
 # ---------------------------------------------------------------
+def _crear_modelo_base(es_clasificacion: bool):
+    """Crea el RandomForest base según el tipo de objetivo."""
+    if es_clasificacion:
+        return RandomForestClassifier(
+            n_estimators=250, max_depth=8, min_samples_leaf=4,
+            random_state=42, n_jobs=-1,
+        )
+    return RandomForestRegressor(
+        n_estimators=250, max_depth=10, min_samples_leaf=3,
+        random_state=42, n_jobs=-1,
+    )
+
+
+def _evaluar_holdout(modelo, X_test: pd.DataFrame, y_test: pd.Series,
+                     es_clasificacion: bool) -> dict:
+    """
+    Evaluación temporal honesta sobre el 20% más reciente.
+    Para el moneyline incluye log-loss y Brier — clave porque el EV
+    se calcula sobre probabilidades, no sobre clases.
+    """
+    metricas: dict[str, float] = {"n_test": int(len(X_test))}
+
+    if es_clasificacion:
+        y_pred = modelo.predict(X_test)
+        metricas["accuracy"] = round(accuracy_score(y_test, y_pred), 4)
+        try:
+            probas = modelo.predict_proba(X_test)
+            clases = list(modelo.classes_)
+            if len(clases) == 2:
+                metricas["log_loss"] = round(log_loss(y_test, probas), 4)
+                metricas["brier"] = round(brier_score_loss(y_test, probas[:, 1]), 4)
+        except Exception:
+            pass
+    else:
+        y_pred = modelo.predict(X_test)
+        metricas["rmse"] = round(float(np.sqrt(mean_squared_error(y_test, y_pred))), 4)
+        metricas["mae"] = round(mean_absolute_error(y_test, y_pred), 4)
+        metricas["r2"] = round(r2_score(y_test, y_pred), 4)
+
+    return metricas
+
+
+def _top_features(modelo, cols_features: list, n: int = 5) -> list:
+    """Top-N features por importancia (solo RF crudo, no calibrado)."""
+    try:
+        importancias = modelo.feature_importances_
+        pares = sorted(zip(cols_features, importancias), key=lambda p: p[1], reverse=True)
+        return [f"{nombre}={valor:.3f}" for nombre, valor in pares[:n]]
+    except Exception:
+        return []
+
+
 def entrenar_modelos():
     os.makedirs(MODEL_DIR, exist_ok=True)
     df = construir_datos()
@@ -484,19 +618,98 @@ def entrenar_modelos():
     X = df[cols_features].fillna(0.0)
     corte = int(len(df) * 0.8)
 
+    # Split temporal estricto: train = pasado, test = 20% más reciente.
+    X_train, X_test = X.iloc[:corte], X.iloc[corte:]
+
+    print(f"  📐 Dataset: {len(df)} juegos | train={len(X_train)} | holdout={len(X_test)} (temporal)")
+
+    resumen_metricas: dict[str, dict] = {}
+
     for objetivo in TARGETS:
         if objetivo not in df.columns:
+            print(f"  ⏭️  '{objetivo}' sin target disponible — se omite.")
             continue
+
         es_clasificacion = objetivo == "hom_win"
         y = df[objetivo].astype(int) if es_clasificacion else df[objetivo].astype(float)
+        y_train, y_test = y.iloc[:corte], y.iloc[corte:]
+
+        if y_train.nunique() < 2 or (es_clasificacion and y_test.nunique() < 2):
+            print(f"  ⏭️  '{objetivo}' con una sola clase en train/test — se omite.")
+            continue
+
+        base = _crear_modelo_base(es_clasificacion)
+
+        # 1) Evaluación en holdout con el modelo base (métricas comparables).
+        try:
+            base.fit(X_train, y_train)
+            metricas_test = _evaluar_holdout(base, X_test, y_test, es_clasificacion)
+        except Exception as e:
+            print(f"  ⚠️ Error evaluando '{objetivo}': {e}")
+            metricas_test = {}
+
+        # 2) Calibración de probabilidades para el clasificador (EV fiable).
+        calibrado = False
+        modelo_final = base
+        if es_clasificacion and CALIBRACION_DISPONIBLE:
+            try:
+                modelo_cal = CalibratedClassifierCV(
+                    _crear_modelo_base(True), method="sigmoid", cv=3
+                )
+                modelo_cal.fit(X_train, y_train)
+                metricas_cal = _evaluar_holdout(modelo_cal, X_test, y_test, True)
+                # Adoptar calibración si no empeora el log-loss (si existe).
+                if "log_loss" not in metricas_test or                    metricas_cal.get("log_loss", 9e9) <= metricas_test.get("log_loss", 9e9):
+                    modelo_final = modelo_cal
+                    calibrado = True
+                    metricas_test = metricas_cal
+            except Exception as e:
+                print(f"  ⚠️ Calibración falló para '{objetivo}' ({e}); se usa RF crudo.")
+
+        # 3) Re-fit sobre el 100% de los datos (tras evaluar: sin fuga).
+        modelo_final.fit(X, y)
+
+        joblib.dump(
+            {
+                "modelo": modelo_final,
+                "features": cols_features,
+                "calibrado": calibrado,
+                "metricas_test": metricas_test,
+            },
+            os.path.join(MODEL_DIR, f"{objetivo}.joblib"),
+        )
+
+        # 4) Auditoría en consola + persistencia.
+        resumen_metricas[objetivo] = {
+            **metricas_test,
+            "calibrado": calibrado,
+            "n_train_full": int(len(X)),
+        }
 
         if es_clasificacion:
-            modelo = RandomForestClassifier(n_estimators=250, max_depth=8, min_samples_leaf=4, random_state=42, n_jobs=-1)
+            detalle = (f"acc={metricas_test.get('accuracy', '—')} "
+                       f"logloss={metricas_test.get('log_loss', '—')} "
+                       f"brier={metricas_test.get('brier', '—')}")
         else:
-            modelo = RandomForestRegressor(n_estimators=250, max_depth=10, min_samples_leaf=3, random_state=42, n_jobs=-1)
+            detalle = (f"rmse={metricas_test.get('rmse', '—')} "
+                       f"mae={metricas_test.get('mae', '—')} "
+                       f"r2={metricas_test.get('r2', '—')}")
 
-        modelo.fit(X.iloc[:corte], y.iloc[:corte])
-        joblib.dump({"modelo": modelo, "features": cols_features}, os.path.join(MODEL_DIR, f"{objetivo}.joblib"))
+        print(f"  ✅ {objetivo:<16} {detalle} {'[calibrado]' if calibrado else ''}")
+        top = _top_features(base, cols_features)
+        if top:
+            print(f"     ↳ top features: {', '.join(top)}")
+
+    if resumen_metricas:
+        os.makedirs(OUTPUT_DIR, exist_ok=True)
+        ruta_metricas = os.path.join(OUTPUT_DIR, "metricas_modelos.json")
+        with open(ruta_metricas, "w", encoding="utf-8") as f:
+            json.dump(
+                {"season": SEASON, "generado": datetime.datetime.now().isoformat(),
+                 "n_juegos": int(len(df)), "modelos": resumen_metricas},
+                f, indent=2, ensure_ascii=False,
+            )
+        print(f"  💾 Métricas persistidas en: {ruta_metricas}")
 
 
 # ---------------------------------------------------------------
@@ -622,9 +835,9 @@ def predecir_dia(fecha: str | None = None) -> pd.DataFrame:
 def main():
     fecha_target = sys.argv[1] if len(sys.argv) > 1 else datetime.date.today().strftime("%Y-%m-%d")
 
-    print(f"🚀 Iniciando Pipeline MLB ML Pro (Fecha: {fecha_target})...")
+    print(f"🚀 Iniciando Pipeline MLB ML Pro v2.0 (Fecha: {fecha_target})...")
 
-    print("1️⃣ Entrenando / Actualizando modelos cuantitativos...")
+    print("1️⃣ Entrenando / Actualizando modelos cuantitativos (con evaluación temporal)...")
     entrenar_modelos()
 
     print("2️⃣ Generando predicciones y buscando cuotas de valor (+EV)...")
