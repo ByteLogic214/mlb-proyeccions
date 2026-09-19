@@ -32,9 +32,12 @@ jobs:
       - name: Run Predictions and EV+ Models
         env:
           ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
+          PYTHONPATH: .
         run: python mlb_betting.py
 
       - name: Run Historical Performance Tracker
+        env:
+          PYTHONPATH: .
         run: python track.py
 
       - name: Upload artifacts
