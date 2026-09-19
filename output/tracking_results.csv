@@ -128,3 +128,18 @@ fecha,matchup,pred_winner,real_winner,ml_correct,pred_total,real_total,total_err
 2026-09-17,Detroit Tigers @ Chicago White Sox,home,home,True,8.68,4,4.68,False,Sin Valor Claro,0.0,0.0
 2026-09-17,Boston Red Sox @ Texas Rangers,away,away,True,8.46,7,1.4600000000000009,False,Sin Valor Claro,0.0,0.0
 2026-09-17,Minnesota Twins @ Los Angeles Angels,home,home,True,8.77,9,0.23000000000000043,True,Local (+EV 15.7%),4.1,3.9423076923076925
+2026-09-18,Chicago Cubs @ Cincinnati Reds,away,home,False,8.82,10,1.1799999999999997,True,Visitante (+EV 3.0%),1.0,-1.0
+2026-09-18,Kansas City Royals @ Pittsburgh Pirates,home,home,True,8.76,13,4.24,True,Visitante (+EV 23.8%),3.7000000000000006,-3.7000000000000006
+2026-09-18,Milwaukee Brewers @ Baltimore Orioles,home,away,False,8.19,11,2.8100000000000005,True,Local (+EV 17.9%),3.8,-3.8
+2026-09-18,Athletics @ Cleveland Guardians,home,home,True,8.97,8,0.9700000000000006,True,Visitante (+EV 25.9%),3.4000000000000004,-3.4000000000000004
+2026-09-18,Boston Red Sox @ Tampa Bay Rays,home,away,False,8.09,6,2.09,False,Sin Valor Claro,0.0,0.0
+2026-09-18,Philadelphia Phillies @ New York Mets,away,home,False,8.79,9,0.21000000000000085,True,Visitante (+EV 10.8%),2.7,-2.7
+2026-09-18,Detroit Tigers @ Chicago White Sox,away,away,True,8.2,19,10.8,True,Visitante (+EV 9.2%),2.1,2.3100000000000005
+2026-09-18,Toronto Blue Jays @ Texas Rangers,home,home,True,8.15,8,0.15000000000000036,True,Local (+EV 11.9%),2.6,3.0160000000000005
+2026-09-18,Seattle Mariners @ Colorado Rockies,away,away,True,11.31,9,2.3100000000000005,True,Local (+EV 16.9%),2.7,-2.7
+2026-09-18,Atlanta Braves @ Houston Astros,home,away,False,7.99,8,0.009999999999999787,True,Local (+EV 10.7%),2.7,-2.7
+2026-09-18,Washington Nationals @ St. Louis Cardinals,home,away,False,9.17,10,0.8300000000000001,False,Sin Valor Claro,0.0,0.0
+2026-09-18,Minnesota Twins @ Los Angeles Angels,home,away,False,8.14,3,5.140000000000001,True,Local (+EV 15.6%),3.9,-3.9
+2026-09-18,Miami Marlins @ San Diego Padres,home,home,True,8.79,10,1.2100000000000009,True,Visitante (+EV 18.5%),2.7,-2.7
+2026-09-18,New York Yankees @ Arizona Diamondbacks,away,away,True,9.12,11,1.8800000000000008,False,Sin Valor Claro,0.0,0.0
+2026-09-18,San Francisco Giants @ Los Angeles Dodgers,home,home,True,8.59,10,1.4100000000000001,True,Visitante (+EV 67.0%),6.800000000000001,-6.800000000000001

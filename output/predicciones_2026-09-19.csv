@@ -1,0 +1,16 @@
+fecha,matchup,hom_team,away_team,hom_pitcher,away_pitcher,park_factor,hom_runs,away_runs,total_runs,ml_local_%,ml_visitante_%,cuota_local,cuota_visitante,pick_ev,stake_rec
+2026-09-19,Detroit Tigers @ Chicago White Sox,Chicago White Sox,Detroit Tigers,Sean Burke,Jackson Jobe,1.0,3.64,4.01,8.74,47.0,53.0,1.7692307692307692,2.1,Visitante (+EV 11.3%),2.6%
+2026-09-19,Milwaukee Brewers @ Baltimore Orioles,Baltimore Orioles,Milwaukee Brewers,Trevor Rogers,Robert Gasser,1.02,4.07,4.25,8.24,47.4,52.6,1.9615384615384617,1.8928571428571428,Sin Valor Claro,0%
+2026-09-19,Boston Red Sox @ Tampa Bay Rays,Tampa Bay Rays,Boston Red Sox,Freddy Peralta,TBD,0.93,4.46,4.25,8.41,49.6,50.4,1.6756756756756757,2.26,Visitante (+EV 13.9%),2.8%
+2026-09-19,Philadelphia Phillies @ New York Mets,New York Mets,Philadelphia Phillies,Christian Scott,Andrew Painter,0.94,4.49,4.66,8.58,46.7,53.3,1.8333333333333335,2.02,Visitante (+EV 7.7%),1.9%
+2026-09-19,Athletics @ Cleveland Guardians,Cleveland Guardians,Athletics,Tanner Bibee,Jacob Lopez,0.94,5.21,4.37,9.38,52.5,47.5,1.5617977528089888,2.5,Visitante (+EV 18.8%),3.1%
+2026-09-19,Chicago Cubs @ Cincinnati Reds,Cincinnati Reds,Chicago Cubs,Nick Lodolo,Matthew Boyd,1.12,3.88,4.98,8.43,44.7,55.3,2.1799999999999997,1.7246376811594204,Sin Valor Claro,0%
+2026-09-19,Kansas City Royals @ Pittsburgh Pirates,Pittsburgh Pirates,Kansas City Royals,Bubba Chandler,Noah Cameron,0.95,4.44,4.46,9.28,49.7,50.3,1.8928571428571428,1.9615384615384617,Sin Valor Claro,0%
+2026-09-19,Toronto Blue Jays @ Texas Rangers,Texas Rangers,Toronto Blue Jays,Cal Quantrill,José Soriano,1.02,4.04,3.83,8.07,47.6,52.4,1.9615384615384617,1.8928571428571428,Sin Valor Claro,0%
+2026-09-19,Atlanta Braves @ Houston Astros,Houston Astros,Atlanta Braves,Hayden Wesneski,Grant Holmes,0.98,4.04,3.96,8.61,52.1,47.9,1.7692307692307692,2.1,Sin Valor Claro,0%
+2026-09-19,Washington Nationals @ St. Louis Cardinals,St. Louis Cardinals,Washington Nationals,Michael McGreevy,Andrew Alvarez,0.99,4.72,4.2,8.77,51.4,48.6,1.847457627118644,2.0,Sin Valor Claro,0%
+2026-09-19,Seattle Mariners @ Colorado Rockies,Colorado Rockies,Seattle Mariners,Jose Quintana,Bryce Miller,1.35,5.15,5.11,10.94,52.3,47.7,2.3,1.6493506493506493,Local (+EV 20.3%),3.9%
+2026-09-19,New York Yankees @ Arizona Diamondbacks,Arizona Diamondbacks,New York Yankees,Brandon Pfaadt,Cam Schlittler,0.97,4.3,4.48,9.08,46.7,53.3,2.38,1.5988023952095807,Local (+EV 11.1%),2.0%
+2026-09-19,Miami Marlins @ San Diego Padres,San Diego Padres,Miami Marlins,Casey Mize,Eury Pérez,0.92,4.3,4.16,8.41,55.1,44.9,1.6289308176100628,2.31,Visitante (+EV 3.7%),0.7%
+2026-09-19,San Francisco Giants @ Los Angeles Dodgers,Los Angeles Dodgers,San Francisco Giants,Tarik Skubal,TBD,1.01,4.79,3.81,8.73,56.8,43.2,1.2469135802469136,4.2,Visitante (+EV 81.4%),6.4%
+2026-09-19,Minnesota Twins @ Los Angeles Angels,Los Angeles Angels,Minnesota Twins,Reid Detmers,Joe Ryan,0.96,4.35,3.75,8.53,56.6,43.4,1.900900900900901,1.925925925925926,Local (+EV 7.6%),2.1%
