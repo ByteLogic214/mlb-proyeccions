@@ -21,9 +21,10 @@ import sys
 import pandas as pd
 import requests
 
-from mlbpro.config import config
-from mlbpro.portfolio.ledger import Ledger
-from mlbpro.reporting.notify import enviar, mensaje_reporte
+# CORRECCIÓN DE IMPORTACIONES: Apuntando a la raíz y a la carpeta 'src' de tu repositorio
+from config import config
+from src.portfolio.ledger import Ledger
+from src.reporting.notify import enviar, mensaje_reporte
 
 API_BASE = config.api.mlb_base_url
 
