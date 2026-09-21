@@ -1,0 +1,4 @@
+fecha,matchup,hom_team,away_team,hom_pitcher,away_pitcher,park_factor,hom_runs,away_runs,total_runs,ml_local_%,ml_visitante_%,cuota_local,cuota_visitante,pick_ev,stake_rec
+2026-09-21,Toronto Blue Jays @ Baltimore Orioles,Baltimore Orioles,Toronto Blue Jays,Shane Baz,Trey Yesavage,1.02,4.35,4.82,8.91,46.4,53.6,1.8333333333333335,2.02,Visitante (+EV 8.3%),2.0%
+2026-09-21,Washington Nationals @ Detroit Tigers,Detroit Tigers,Washington Nationals,River Ryan,DJ Herz,0.95,4.66,3.96,8.44,53.8,46.2,1.6097560975609757,2.38,Visitante (+EV 10.0%),1.8%
+2026-09-21,Minnesota Twins @ San Francisco Giants,San Francisco Giants,Minnesota Twins,Blade Tidwell,Zebby Matthews,0.95,4.42,3.99,8.1,56.9,43.1,2.04,1.819672131147541,Local (+EV 16.1%),3.9%
