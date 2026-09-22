@@ -52,36 +52,46 @@ class PredictionResult:
         
         prob_h = self.predictions["ml_local_%"] / 100.0
         prob_a = self.predictions.get("ml_visitante_%", 100 - self.predictions["ml_local_%"]) / 100.0
-        
+
         h_odds = self.odds.get("hom_ml_odds", 0.0)
         a_odds = self.odds.get("away_ml_odds", 0.0)
-        
-        ev_h = (prob_h * h_odds - 1) * 100 if h_odds > 1.0 else -999.0
-        ev_a = (prob_a * a_odds - 1) * 100 if a_odds > 1.0 else -999.0
-        
-        threshold = 3.0  # Umbral de EV+ mínimo
-        
-        if ev_h > threshold:
+
+        ev_h = (prob_h * h_odds - 1) if h_odds > 1.0 else -999.0
+        ev_a = (prob_a * a_odds - 1) if a_odds > 1.0 else -999.0
+
+        # Filtros de Ingeniería Financiera Avanzada
+        min_odd_filter = 1.50
+        min_ev_filter = 0.07
+        max_stake_cap = 1.5
+
+        # Inicialización por defecto
+        self.ev_analysis = {
+            "pick": "Sin Valor",
+            "ev_pct": "—",
+            "stake": "0%",
+            "confidence": "Ninguna"
+        }
+
+        # Evaluación del lado Local
+        if h_odds >= min_odd_filter and ev_h >= min_ev_filter:
+            # Criterio de Kelly Seguro (fracción del 10% del EV)
+            kelly_stake = min(ev_h * 10.0, max_stake_cap)
             self.ev_analysis = {
                 "pick": f"{self.hom_team} ML",
-                "ev_pct": f"+{ev_h:.1f}%",
-                "stake": "1.5% Bankroll",
-                "confidence": "Alta" if ev_h > 8.0 else "Media"
+                "ev_pct": f"+{ev_h*100.1:.1f}%",
+                "stake": f"{kelly_stake:.2f} Unidades",
+                "confidence": "Alta" if ev_h >= 0.15 else "Media"
             }
-        elif ev_a > threshold:
+        # Evaluación del lado Visitante
+        elif a_odds >= min_odd_filter and ev_a >= min_ev_filter:
+            kelly_stake = min(ev_a * 10.0, max_stake_cap)
             self.ev_analysis = {
                 "pick": f"{self.away_team} ML",
-                "ev_pct": f"+{ev_a:.1f}%",
-                "stake": "1.5% Bankroll",
-                "confidence": "Alta" if ev_a > 8.0 else "Media"
+                "ev_pct": f"+{ev_a*100.1:.1f}%",
+                "stake": f"{kelly_stake:.2f} Unidades",
+                "confidence": "Alta" if ev_a >= 0.15 else "Media"
             }
-        else:
-            self.ev_analysis = {
-                "pick": "Sin Valor",
-                "ev_pct": "—",
-                "stake": "0%",
-                "confidence": "Ninguna"
-            }
+
     
     def to_dict(self) -> Dict:
         """Convierte a diccionario."""
